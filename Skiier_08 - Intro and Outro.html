@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<html>
+  <head>
+  </head>
+  <body onload = setupGame()>
+    <H1> Downhill skier</h1>
+	<canvas id="GCanvas" width="500" height="500">No HTML5 Support</canvas>
+	<script>
+		//Game canvas
+		var canvas = document.getElementById('GCanvas');
+		var GC = canvas.getContext('2d'); //GCC = Game Canvas (what we draw on)
+		
+		//Global Variables
+		var screenWidth = 500; //must match how big the canvas is!
+		var screenHeight = 500;
+		
+		var gameState = 1; //*1-intro, 2=mainGame 3= outro/gameover  
+		
+		var skierX = screenWidth/2;	//X Y Coordinates - start in the centre
+		var skierY = screenHeight/2;
+		var spriteNum = 1; 
+		
+		//Background image coords - 2 allow for scrolling
+		var bgd1Y = 0;
+		var bgd2Y = 512;
+		var scrollSpeed = 5;
+		
+		//Trees
+		var trees=[{x:0, y:0}];
+		for(t=0;t<10;t++)
+		{
+			var x = Math.floor((Math.random() * screenWidth) + 1);
+			trees.push({x:(x), y:(t*128)});
+		}
+		
+		
+		//Keyboard Input Listener
+		var keyState = {};    
+		window.addEventListener('keydown',function(e){keyState[e.keyCode || e.which] = true;},true);    
+		window.addEventListener('keyup',function(e){keyState[e.keyCode || e.which] = false;},true);	
+			
+		
+		//game functions	
+		function setupGame()
+		{	
+			timerID = setInterval("gameLoop()", 30); //run the mainGame
+			
+			//Create and load image (png)
+			image1 = new Image();
+			image1.src = "skier.png";
+			
+			//scrolling background image
+			bgdImage = new Image();
+			bgdImage.src = "snow.jpg";
+			
+			//intro and game over images
+			introScreen = new Image();
+			introScreen.src = "introscreen.png";
+			
+			gameOverScreen = new Image();
+			gameOverScreen.src = "gameover.png";
+			
+		}
+
+		function gameLoop()
+		{
+
+			switch(gameState)
+			{
+				case 1:intro(); break;
+				case 2:mainGame();break;
+				case 3:outro();break;
+			}
+		}
+		function intro()
+		{
+			if(keyState[32]){gameState = 2;}//Spacebar
+
+			//DRAW Intro game screen
+			//clear screen and draw outline		
+			GC.clearRect(0,0, screenWidth,screenHeight);
+			GC.strokeRect(0,0, screenWidth,screenHeight);
+			GC.drawImage(introScreen, 0,0);
+			
+		}
+		
+		function outro()
+		{
+			if(keyState[27]){gameState = 1;}//Escape Key
+
+			//DRAW game over screen
+			//clear screen and draw outline		
+			GC.clearRect(0,0, screenWidth,screenHeight);
+			GC.strokeRect(0,0, screenWidth,screenHeight);
+			GC.drawImage(gameOverScreen, 0,0);
+		}
+		
+		
+		function mainGame()
+		{
+			//Get Player input 
+			spriteNum = 1;
+			if(keyState[37]){skierX-=10; spriteNum = 0;}//left key
+			if(keyState[39]){skierX+=10; spriteNum = 2;}//right key
+				
+			//Scroll Background	
+			bgd1Y-=scrollSpeed; if(bgd1Y<-500){bgd1Y=500;}				
+			bgd2Y-=scrollSpeed; if(bgd2Y<-500){bgd2Y=500;}	
+			
+			//Move Trees
+			for(t=0;t<10;t++)
+			{		 
+				trees[t].y-=scrollSpeed;
+				if(trees[t].y<0-64)
+				{
+					trees[t].x = Math.floor((Math.random() * screenWidth) + 1);
+					trees[t].y = 512+Math.floor((Math.random() * 100) + 1);				
+				}
+				
+				if((Math.abs(trees[t].x - skierX) <32 )&&  (Math.abs(trees[t].y - skierY)<32))
+				{
+					gameState = 3;
+				}
+				
+			}
+		
+			//DRAW ALL GAME STUFF
+			//clear screen and draw outline		
+			GC.clearRect(0,0, screenWidth,screenHeight);
+			GC.strokeRect(0,0, screenWidth,screenHeight);
+			GC.drawImage( bgdImage, 0,bgd1Y);
+			GC.drawImage( bgdImage, 0,bgd2Y);
+				
+			GC.drawImage( image1, spriteNum*64, 0, 64, 64, skierX, skierY, 64, 64 ); //image, source, destination (crop and scale)
+		
+			for(t=0;t<10;t++)
+			{
+				var tx, ty;
+				tx = trees[t].x; 
+				ty = trees[t].y;
+				GC.drawImage( image1, 0, 64, 64, 64, tx, ty, 64, 64 ); //image, source, destination (crop and scale)
+			}
+		}
+
+	</script>
+  </body>
+</html>
+
+
+

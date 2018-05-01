@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<html>
+  <head>
+  </head>
+  <body onload = setupGame()>
+    <H1> Downhill Skiier</h1>
+	<canvas id="GCanvas" width="400" height="600">No HTML5 Support</canvas>
+	<script>
+		//Game canvas
+		var canvas = document.getElementById('GCanvas');
+		var GC = canvas.getContext('2d'); //GCC = Game Canvas (what we draw on)
+		
+		//Global Variables
+		var screenWidth = 400; //must match how big the canvas is!
+		var screenHeight = 600;
+		
+		var skiierX = screenWidth/2;	//X Y Coordinates - start in the centre
+		var skiierY = screenHeight/2;
+		
+		//Keyboard Input Listener
+		var keyState = {};    
+		window.addEventListener('keydown',function(e){keyState[e.keyCode || e.which] = true;},true);    
+		window.addEventListener('keyup',function(e){keyState[e.keyCode || e.which] = false;},true);	
+			
+		
+		//game functions	
+		function setupGame()
+		{	
+			timerID = setInterval("mainGame()", 30); //run the mainGame
+		}
+
+		function gameLoop(){}
+		function intro(){}
+		
+		function mainGame()
+		{
+			//Get Player input 
+			if(keyState[37]){skiierX-=10;}//left key
+			if(keyState[39]){skiierX+=10;}//right key
+			
+		
+			//DRAW ALL GAME STUFF
+			//clear screen and draw outline
+		function outro(){}
+			GC.clearRect(0,0,screenWidth,screenHeight);
+			GC.strokeRect(0,0, screenWidth,screenHeight);
+			
+			GC.fillRect(skiierX, skiierY, 20,20);
+		
+		}
+
+	</script>
+  </body>
+</html>
+
+
+

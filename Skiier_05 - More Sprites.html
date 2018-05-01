@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<html>
+  <head>
+  </head>
+  <body onload = setupGame()>
+    <H1> Downhill skier</h1>
+	<canvas id="GCanvas" width="500" height="500">No HTML5 Support</canvas>
+	<script>
+		//Game canvas
+		var canvas = document.getElementById('GCanvas');
+		var GC = canvas.getContext('2d'); //GCC = Game Canvas (what we draw on)
+		
+		//Global Variables
+		var screenWidth = 500; //must match how big the canvas is!
+		var screenHeight = 500;
+		
+		var skierX = screenWidth/2;	//X Y Coordinates - start in the centre
+		var skierY = screenHeight/2;
+		var spriteNum = 1;
+		
+		var bgd1Y = 0;
+		var bgd2Y = 512;
+		
+		
+		//Keyboard Input Listener
+		var keyState = {};    
+		window.addEventListener('keydown',function(e){keyState[e.keyCode || e.which] = true;},true);    
+		window.addEventListener('keyup',function(e){keyState[e.keyCode || e.which] = false;},true);	
+			
+		
+		//game functions	
+		function setupGame()
+		{	
+			timerID = setInterval("mainGame()", 30); //run the mainGame
+			
+			//Create and load image (png)
+			image1 = new Image();
+			image1.src = "skier.png";
+			
+			bgdImage = new Image();
+			bgdImage.src = "snow.jpg";
+			
+		}
+
+		function gameLoop(){}
+		function intro(){}
+		function outro(){}
+		
+		function mainGame()
+		{
+			//Get Player input 
+			spriteNum = 1;
+			if(keyState[37]){skierX-=10; spriteNum = 0;}//left key
+			if(keyState[39]){skierX+=10; spriteNum = 2;}//right key
+				
+			bgd1Y-=5;if(bgd1Y<-500){bgd1Y=500;}				
+			bgd2Y-=5;if(bgd2Y<-500){bgd2Y=500;}	
+			
+				
+			//DRAW ALL GAME STUFF
+			//clear screen and draw outline
+		
+			GC.clearRect(0,0,screenWidth,screenHeight);
+			GC.strokeRect(0,0, screenWidth,screenHeight);
+			GC.drawImage( bgdImage, 0,bgd1Y);
+			GC.drawImage( bgdImage, 0,bgd2Y);
+			
+			GC.drawImage( image1, spriteNum*64, 0, 64, 64, skierX, skierY, 64, 64 ); //image, source, destination (crop and scale)
+		
+		
+		}
+
+	</script>
+  </body>
+</html>
+
+
+
